@@ -15,4 +15,8 @@ if (isset($router)) {
     $router->get('/', function () use ($router) {
         return $router->app->version();
     });
+
+    $router->group(['prefix' => 'api/'], function ($app) {
+        $app->post('login/','Authentication\LoginController@login');
+    });
 }
