@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Model\SubscriptionPlan;
 
-class DatabaseSeeder extends Seeder
+class SubscriptionPlansSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,9 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-          //  'UserSeeder',
-            'SubscriptionPlansSeeder'
-        ]);
+        factory(SubscriptionPlan::class, 3)->create();
     }
 }

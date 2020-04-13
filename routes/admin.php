@@ -26,6 +26,14 @@ if (isset($router)) {
                 $router->post('{id}/update', 'UsersController@update');
             });
 
+            $appAuth->group(['prefix' => 'plans/'], function ($router) {
+                $router->post('index', 'SubscriptionPlansController@index');
+                $router->post('create', 'SubscriptionPlansController@create');
+                $router->post('{id}/update', 'SubscriptionPlansController@update');
+                $router->get('{id}/show', 'SubscriptionPlansController@show');
+                $router->get('{id}/delete', 'SubscriptionPlansController@delete');
+            });
+
         });
 
     });
