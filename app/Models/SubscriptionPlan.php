@@ -17,4 +17,23 @@ class SubscriptionPlan extends Model
         'name', 'desc', 'active', 'branches', 'ps4', 'foods_items', 'sub_users',
         'is_monthly', 'monthly_cost', 'is_annual', 'annual_cost'
     ];
+
+    protected $casts = [
+        'active' => 'boolean',
+        'is_monthly' => 'boolean',
+        'is_annual' => 'boolean'
+    ];
+
+
+    public function toArray()
+    {
+        $arr = parent::toArray();
+
+        if (isset($arr['created_at']))
+            $arr['created_at'] = date("Y-m-d H:i:s", strtotime($arr['created_at']));
+        if (isset($arr['updated_at']))
+            $arr['updated_at'] = date("Y-m-d H:i:s", strtotime($arr['updated_at']));
+
+        return $arr;
+    }
 }

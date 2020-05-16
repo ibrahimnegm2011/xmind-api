@@ -6,8 +6,18 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    //
 
+    public $pagination = 15;
+
+    protected function adminValidator($roles, $data)
+    {
+        $validator = validator($data, $roles);
+
+        if ($validator->fails())
+            return $this->fail('validation_error', $validator->errors()->toArray(), 400);
+        else
+            return true;
+    }
 
     public function success($data)
     {
