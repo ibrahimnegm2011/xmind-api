@@ -4,9 +4,9 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SubscriptionPlan extends Model
+class Shift extends Model
 {
-    protected $table = 'subscription_plans';
+    protected $table = 'shifts';
 
     /**
      * The attributes that are mass assignable.
@@ -14,20 +14,16 @@ class SubscriptionPlan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'desc', 'active', 'branches', 'devices', 'food_stuff', 'sub_users',
-        'is_monthly', 'monthly_cost', 'is_annual', 'annual_cost'
-    ];
-
-    protected $casts = [
-        'active' => 'boolean',
-        'is_monthly' => 'boolean',
-        'is_annual' => 'boolean'
+        'user_id', 'shift_date', 'start', 'end', 'status', 'total_records', 'total_times', 'records_revenue',
+        'food_revenue', 'total_revenue'
     ];
 
 
     public function toArray()
     {
         $arr = parent::toArray();
+
+        $arr['shift_date'] = date("Y-m-d", strtotime($arr['shift_date']));
 
         if (isset($arr['created_at']))
             $arr['created_at'] = date("Y-m-d H:i:s", strtotime($arr['created_at']));

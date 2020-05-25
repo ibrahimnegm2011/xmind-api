@@ -18,5 +18,19 @@ if (isset($router)) {
 
     $router->group(['prefix' => 'api/'], function ($app) {
         $app->post('login/','Authentication\LoginController@login');
+
+
+        $app->group(['middleware' => 'auth'], function ($appAuth) {
+            $appAuth->get('load/user', 'LoginController@loadUser');
+
+            $appAuth->group(['prefix' => 'shifts/'], function ($router) {
+                $router->post('index', 'ShiftsController@index');
+//                $router->post('create', 'SubscriptionPlansController@create');
+//                $router->post('{id}/update', 'SubscriptionPlansController@update');
+//                $router->get('{id}/show', 'SubscriptionPlansController@show');
+//                $router->get('{id}/delete', 'SubscriptionPlansController@delete');
+            });
+
+        });
     });
 }
