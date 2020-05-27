@@ -12,6 +12,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable;
 
+    public $timestamps= false;
+
     protected $table = 'users';
 
     /**
@@ -31,4 +33,33 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password', 'api_token'
     ];
+
+
+    public function loggable()
+    {
+        return $this->morphTo();
+    }
+
+
+    public function toArray()
+    {
+        $arr = parent::toArray();
+
+        $userTypeData = $this->loggable->toArray();
+        unset($userTypeData['id']);
+
+        $arr['type'] = $this->getUserType();
+        $arr["{$arr['type']}_id"] = $arr['loggable_id'];
+        unset($arr['loggable_type']);
+        unset($arr['loggable_id']);
+
+        $arr += $userTypeData;
+
+        return $arr;
+    }
+
+
+    public function getUserType(){
+        return strtolower(explode("\\", $this->loggable_type)[2]);
+    }
 }

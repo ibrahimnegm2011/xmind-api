@@ -12,15 +12,12 @@
 */
 
 if (isset($router)) {
-    $router->get('/', function () use ($router) {
-        return $router->app->version();
-    });
+    $router->group(['prefix' => 'api/auth'], function ($app) {
+        $app->post('login/', 'LoginController@login');
 
-    $router->group(['prefix' => 'api/', 'middleware' => 'auth'], function ($app) {
-
-        $app->group(['prefix' => 'shifts/'], function ($router) {
-            $router->post('index', 'ShiftsController@index');
-            $router->get('current', 'ShiftsController@current');
+        $app->group(['middleware' => 'auth'], function ($appAuth) {
+            $appAuth->get('load/user', 'LoginController@loadUser');
         });
+
     });
 }

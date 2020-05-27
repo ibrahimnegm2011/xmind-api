@@ -15,7 +15,8 @@ class CreateShiftsTable extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('user_id', 255);
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('account_id')->references('id')->on('users');
             $table->date('shift_date');
             $table->string('start', 10);
             $table->string('end', 10);

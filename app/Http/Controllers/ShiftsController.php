@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Shift;
 use App\Model\SubscriptionPlan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShiftsController extends Controller
 {
@@ -35,6 +36,42 @@ class ShiftsController extends Controller
         }
 
         return $this->success($data->paginate($pagination));
+    }
+
+    public function current(Request $request)
+    {
+        $user = Auth::user();
+        $account_id = $user->loggable->getAccountId();
+
+        $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
+
+        if (!$currentShift) {
+            return $this->success([
+                'shift' => null,
+                'creatable' => true,
+                'canAccess' => true
+            ]);
+        }
+
+        if ($user->getUserType() == 'account' || $currentShift->user_id == $user->id) {
+            $data = [
+                'shift' => $currentShift,
+                'creatable' => false,
+                'canAccess' => true
+            ];
+        }else{
+            $data = [
+                'shift' => null,
+                'creatable' => false,
+                'canAccess' => false,
+                'shiftOwner' => [
+                    'id' => $currentShift->user_id,
+                    'name' => $currentShift->user->name
+                ]
+            ];
+        }
+
+        return $this->success($data);
     }
 
     public function show(Request $request)

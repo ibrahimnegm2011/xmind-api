@@ -5,7 +5,8 @@
 use Faker\Generator as Faker;
 use App\Model\Admin;
 use App\Model\Account;
-use App\Model\SubUser;
+use App\Model\Employee;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,27 +19,19 @@ use App\Model\SubUser;
 |
 */
 
-$factory->define(\App\Model\Admin::class, function (Faker $faker) {
-    return getUserData($faker) + [
-            'type' => 1
-        ];
+$factory->define(Admin::class, function (Faker $faker) {
+    return [];
 });
 
 $factory->define(Account::class, function (Faker $faker) {
-    return getUserData($faker) + [
-            'type' => 2
-        ];
+    return [];
 });
 
-$factory->define(SubUser::class, function (Faker $faker) {
-    return getUserData($faker) + [
-            'type' => 3
-        ];
+$factory->define(Employee::class, function (Faker $faker) {
+    return [];
 });
 
-
-function getUserData(Faker $faker)
-{
+$factory->define(User::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->email,
@@ -46,4 +39,4 @@ function getUserData(Faker $faker)
         'phone' => $faker->phoneNumber,
         'password' => app('hash')->make('123456')
     ];
-}
+});

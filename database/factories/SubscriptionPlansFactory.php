@@ -5,7 +5,7 @@
 use Faker\Generator as Faker;
 use App\Model\Admin;
 use App\Model\Account;
-use App\Model\SubUser;
+use App\Model\Employee;
 
 /*
 |--------------------------------------------------------------------------

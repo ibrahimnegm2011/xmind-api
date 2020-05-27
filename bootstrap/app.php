@@ -78,6 +78,7 @@ $app->middleware([
 
  $app->routeMiddleware([
      'auth' => App\Http\Middleware\Authenticate::class,
+     'admin_auth' => App\Http\Middleware\AdminAuthenticate::class,
  ]);
 
 /*
@@ -116,6 +117,12 @@ $app->router->group([
     'namespace' => 'App\Http\Controllers\Admin',
 ], function ($router) {
     require __DIR__ . '/../routes/admin.php';
+});
+
+$app->router->group([
+    'namespace' => 'App\Http\Controllers\Auth',
+], function ($router) {
+    require __DIR__ . '/../routes/auth.php';
 });
 
 return $app;

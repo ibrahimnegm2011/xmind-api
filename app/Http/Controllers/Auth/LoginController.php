@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         $user = User::where('username', $request->input('username'))->first();
 
-        if (Hash::check($request->input('password'), $user->password)) {
+        if ($user && Hash::check($request->input('password'), $user->password)) {
             $token = base64_encode(Str::random(40));
             User::where('username', $request->input('username'))->update(['api_token' => $token]);
 

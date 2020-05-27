@@ -21,12 +21,15 @@ class CreateUsersTable extends Migration
             $table->string('name', 255);
             $table->string('email', 100)->unique();
             $table->string('phone', 50)->unique();
-            $table->tinyInteger('type', false, true)->index('type_index');
-            $table->foreignId('parent_id')->nullable()->references('id')->on('users');
             $table->string('api_token', 255)->nullable()->index('api_token_index');
             $table->dateTime('last_login')->nullable();
             $table->string('lang', 5)->default('en');
-            $table->timestamps();
+            $table->unsignedBigInteger('loggable_id');
+            $table->string('loggable_type', 100);
+
+//
+//            $table->tinyInteger('usrtype', false, true)->index('type_index');
+//            $table->foreignId('parent_id')->nullable()->references('id')->on('users');
         });
     }
 

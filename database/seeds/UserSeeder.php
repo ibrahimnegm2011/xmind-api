@@ -3,7 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\Model\Admin;
 use App\Model\Account;
-use App\Model\SubUser;
+use App\Model\Employee;
+use App\User;
 
 class UserSeeder extends Seeder
 {
@@ -14,13 +15,25 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        factory(Admin::class)->create(['username' => 'admin']);
-        factory(Admin::class)->create(['username' => 'khaled']);
-        factory(Admin::class)->create(['username' => 'hamada']);
+
+        factory(Admin::class, 1)->create()->each(function (Admin $admin) {
+            $admin->user()->save(factory(User::class)->make(['username' => 'admin']));
+        });
+        factory(Admin::class, 1)->create()->each(function (Admin $admin) {
+            $admin->user()->save(factory(User::class)->make(['username' => 'khaled']));
+        });
+        factory(Admin::class, 1)->create()->each(function (Admin $admin) {
+            $admin->user()->save(factory(User::class)->make(['username' => 'hamada']));
+        });
 
         factory(Account::class, 5)->create()->each(function (Account $account) {
+            $account->user()->save(factory(User::class)->make());
+
             if (rand(0, 1) != 1) return;
-            $account->subUsers()->save(factory(SubUser::class)->make());
+
+            factory(Employee::class, 1)->create(['account_id' => $account->id])->each(function (Employee $emp) {
+                $emp->user()->save(factory(User::class)->make());
+            });
         });
     }
 }

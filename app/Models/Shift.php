@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Shift extends Model
@@ -14,10 +15,18 @@ class Shift extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'shift_date', 'start', 'end', 'status', 'total_records', 'total_times', 'records_revenue',
+        'user_id', 'account_id', 'shift_date', 'start', 'end', 'status', 'total_records', 'total_times', 'records_revenue',
         'food_revenue', 'total_revenue'
     ];
 
+
+    public function account(){
+        return $this->belongsTo(Account::class, 'account_id', 'id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 
     public function toArray()
     {
