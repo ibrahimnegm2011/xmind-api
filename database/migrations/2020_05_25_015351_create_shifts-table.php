@@ -19,13 +19,13 @@ class CreateShiftsTable extends Migration
             $table->foreignId('account_id')->references('id')->on('users');
             $table->date('shift_date');
             $table->string('start', 10);
-            $table->string('end', 10);
+            $table->string('end', 10)->default("");
             $table->enum('status', ['started', 'canceled', 'finished']);
-            $table->integer('total_records');
-            $table->string('total_times', 10);
-            $table->decimal('records_revenue', 8, 2, true);
-            $table->decimal('food_revenue', 8, 2, true);
-            $table->decimal('total_revenue', 8, 2, true);
+            $table->integer('total_records')->default(0);
+            $table->string('total_times', 10)->default("00:00");
+            $table->decimal('records_revenue', 8, 2, true)->default(0);
+            $table->decimal('food_revenue', 8, 2, true)->default(0);
+            $table->decimal('total_revenue', 8, 2, true)->default(0);
             $table->timestamps();
         });
     }

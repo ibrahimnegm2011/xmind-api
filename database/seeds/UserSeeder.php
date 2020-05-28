@@ -26,7 +26,18 @@ class UserSeeder extends Seeder
             $admin->user()->save(factory(User::class)->make(['username' => 'hamada']));
         });
 
-        factory(Account::class, 5)->create()->each(function (Account $account) {
+        factory(Account::class, 1)->create(['plan_id' => 1])->each(function (Account $account) {
+            $account->user()->save(factory(User::class)->make(['username' => 'xmind']));
+
+            factory(Employee::class, 1)->create(['account_id' => $account->id])->each(function (Employee $emp) {
+                $emp->user()->save(factory(User::class)->make(['username' => 'ali']));
+            });
+            factory(Employee::class, 1)->create(['account_id' => $account->id])->each(function (Employee $emp) {
+                $emp->user()->save(factory(User::class)->make(['username' => 'jack']));
+            });
+        });
+
+        factory(Account::class, 4)->create()->each(function (Account $account) {
             $account->user()->save(factory(User::class)->make());
 
             if (rand(0, 1) != 1) return;

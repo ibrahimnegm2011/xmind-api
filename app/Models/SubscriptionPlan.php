@@ -14,7 +14,7 @@ class SubscriptionPlan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'desc', 'active', 'branches', 'devices', 'food_stuff', 'sub_users',
+        'name', 'desc', 'active', 'branches', 'devices', 'food_stuff', 'employees',
         'is_monthly', 'monthly_cost', 'is_annual', 'annual_cost'
     ];
 

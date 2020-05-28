@@ -46,11 +46,11 @@ class ShiftsController extends Controller
         $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
 
         if (!$currentShift) {
-            return $this->success([
-                'shift' => null,
-                'creatable' => true,
-                'canAccess' => true
-            ]);
+        return $this->success([
+            'shift' => null,
+            'creatable' => true,
+            'canAccess' => true
+        ]);
         }
 
         if ($user->getUserType() == 'account' || $currentShift->user_id == $user->id) {
@@ -59,15 +59,16 @@ class ShiftsController extends Controller
                 'creatable' => false,
                 'canAccess' => true
             ];
-        }else{
+        } else {
             $data = [
-                'shift' => null,
+                'shift' => [
+                    'user_id' => $currentShift->user_id,
+                    'name' => $currentShift->user->name,
+                    'date' => $currentShift->shift_date,
+                    'start' => $currentShift->start
+                ],
                 'creatable' => false,
                 'canAccess' => false,
-                'shiftOwner' => [
-                    'id' => $currentShift->user_id,
-                    'name' => $currentShift->user->name
-                ]
             ];
         }
 
@@ -82,8 +83,31 @@ class ShiftsController extends Controller
 
     public function create(Request $request)
     {
+        $user = Auth::user();
+        $account_id = $user->loggable->getAccountId();
 
-        dd('create');
+        $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
+
+        if ($currentShift) {
+            return $this->fail("shift_already_started", "shift_already_started", [], 402);
+        }
+
+        $data = [
+            'user_id' => $user->id,
+            'account_id' => $account_id,
+            'shift_date' => date('Y-m-d'),
+            'start' => date('H:i:s'),
+            'status' => 'started'
+        ];
+
+        $shift = new Shift();
+        $shift->fill($data);
+        $shift->save();
+
+        return $this->success([
+            'status' => 'success',
+            'shift' => $shift
+        ]);
     }
 
     public function update(Request $request)

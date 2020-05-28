@@ -21,6 +21,7 @@ if (isset($router)) {
         $app->group(['prefix' => 'shifts/'], function ($router) {
             $router->post('index', 'ShiftsController@index');
             $router->get('current', 'ShiftsController@current');
+            $router->post('create', 'ShiftsController@create');
         });
     });
 }

@@ -31,7 +31,7 @@ $factory->define(\App\Model\SubscriptionPlan::class, function (Faker $faker) {
         'branches' => $faker->numberBetween(1, 5),
         'devices' => $faker->numberBetween(1, 5),
         'food_stuff' => $faker->numberBetween(1, 5),
-        'sub_users' => $faker->numberBetween(1, 5),
+        'employees' => $faker->numberBetween(1, 5),
         'is_monthly' => $is_monthly,
         'monthly_cost' => $is_monthly ? $faker->randomFloat(0, 10, 200) : 0,
         'is_annual' => $is_annual,

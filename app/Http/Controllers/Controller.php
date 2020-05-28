@@ -14,7 +14,7 @@ class Controller extends BaseController
         $validator = validator($data, $roles);
 
         if ($validator->fails())
-            return $this->fail('validation_error', $validator->errors()->toArray(), 400);
+            return $this->validationFail($validator->errors()->toArray());
         else
             return true;
     }
@@ -29,14 +29,20 @@ class Controller extends BaseController
         ], 200);
     }
 
+    public function validationFail($errors){
+        return $this->fail('validation_error', "Validation Errors", $errors, 400);
 
-    public function fail($code = 'internal_error', $msg = "Internal Server Error", $status = 500)
+    }
+
+
+    public function fail($code = 'internal_error', $msg = "Internal Server Error", $errors = [], $status = 500)
     {
         return $this->response([
             'status' => 'fail',
             'status_code' => $status,
             'error_code' => $code,
             'message' => $msg,
+            'error' => $errors
         ], $status);
     }
 

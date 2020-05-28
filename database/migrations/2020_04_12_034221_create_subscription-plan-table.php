@@ -21,7 +21,7 @@ class CreateSubscriptionPlanTable extends Migration
             $table->integer('branches')->default(0);
             $table->integer('devices')->default(0);
             $table->integer('food_stuff')->default(0);
-            $table->integer('sub_users')->default(0);
+            $table->integer('employees')->default(0);
             $table->boolean('is_monthly')->default(true);
             $table->decimal('monthly_cost', 8, 2, true);
             $table->boolean('is_annual')->default(true);

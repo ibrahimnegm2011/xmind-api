@@ -32,7 +32,7 @@ class LoginController extends Controller
 
             return $this->success($response);
         } else {
-            return $this->fail('invalid_credentials', "Username or password is not correct", 401);
+            return $this->fail('invalid_credentials', "Username or password is not correct", [], 401);
         }
 
     }
@@ -47,7 +47,7 @@ class LoginController extends Controller
 
             return $this->success($response);
         } else {
-            return $this->fail('invalid_token', "User Token has been expired", 401);
+            return $this->fail('invalid_token', "User Token has been expired", [], 401);
         }
     }
 }
