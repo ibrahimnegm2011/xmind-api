@@ -23,5 +23,13 @@ if (isset($router)) {
             $router->get('current', 'ShiftsController@current');
             $router->post('create', 'ShiftsController@create');
         });
+
+        $app->group(['prefix' => 'devices/'], function ($router) {
+            $router->post('index', 'DevicesController@index');
+            $router->post('create', 'DevicesController@create');
+            $router->get('{id}/show', 'DevicesController@show');
+            $router->get('{id}/delete', 'DevicesController@delete');
+            $router->post('{id}/update', 'DevicesController@update');
+        });
     });
 }

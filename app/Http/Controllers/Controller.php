@@ -19,12 +19,12 @@ class Controller extends BaseController
             return true;
     }
 
-    public function success($data)
+    public function success($data, $status_code = 200)
     {
 
         return $this->response([
             'status' => 'success',
-            'status_code' => 200,
+            'status_code' => $status_code,
             'data' => $data
         ], 200);
     }
@@ -35,20 +35,32 @@ class Controller extends BaseController
     }
 
 
-    public function fail($code = 'internal_error', $msg = "Internal Server Error", $errors = [], $status = 500)
+    public function fail($code = 'internal_error', $msg = "Internal Server Error", $errors = [], $status_code = 500)
     {
         return $this->response([
             'status' => 'fail',
-            'status_code' => $status,
+            'status_code' => $status_code,
             'error_code' => $code,
             'message' => $msg,
             'error' => $errors
-        ], $status);
+        ], $status_code);
     }
 
 
     public function response($data, $status = 200)
     {
         return response()->json($data, $status);
+    }
+
+
+
+    public function filterStrings($query, $columns, $inputs)
+    {
+
+        foreach ($inputs as $key => $value)
+            (in_array($key, $columns)) ? $query = $query->where($key, 'like', '%' . $value . '%') : '';
+
+
+        return $query;
     }
 }

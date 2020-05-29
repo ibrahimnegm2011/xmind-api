@@ -32,4 +32,9 @@ class Employee extends Model
     {
         return $this->account_id;
     }
+
+    public function getAccount()
+    {
+        return $this->account;
+    }
 }
