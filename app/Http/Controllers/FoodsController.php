@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Device;
+use App\Model\FoodStuff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DevicesController extends Controller
+class FoodsController extends Controller
 {
 
     private function filterList($query, $data)
@@ -17,10 +17,6 @@ class DevicesController extends Controller
             $query->where('active', $data['active']);
         }
 
-        if(isset($data['has_multi']) && !is_null($data['has_multi'])){
-            $query->where('has_multi', $data['has_multi']);
-        }
-
         return $query;
     }
 
@@ -29,9 +25,8 @@ class DevicesController extends Controller
         $check = $this->adminValidator([
             'pagination' => 'numeric',
             'name' => 'max:255',
-            'type' => 'max:255',
+            'price' => 'numeric|max:255',
             'active' => 'boolean',
-            'has_multi' => 'boolean',
         ], $request->all());
 
         if ($check !== true)
@@ -41,8 +36,7 @@ class DevicesController extends Controller
         if (is_null($request->pagination))
             $pagination = $this->pagination;
 
-        $query = Device::select('id', 'account_id', 'name', 'type', 'active',
-            'normal_hour_rate', 'has_multi', 'multi_hour_rate');
+        $query = FoodStuff::select('id', 'account_id', 'name', 'price', 'active');
 
         $query = $this->filterList($query, $request->all());
 
@@ -55,19 +49,19 @@ class DevicesController extends Controller
         $data['account_id'] = Auth::user()->loggable->getAccountId();
 
         $check = $this->adminValidator([
-            'id' => 'required|integer|exists:devices,id',
+            'id' => 'required|integer|exists:food_stuff,id',
             'account_id' => 'required|integer|exists:accounts,id',
         ], $data);
 
         if ($check !== true)
             return $check;
 
-        $device = Device::find($id);
+        $food = FoodStuff::find($id);
 
-        if(!$device){
+        if(!$food){
             return $this->fail('not_found', "Not Found", [], 404);
         }else{
-            return $this->success($device);
+            return $this->success($food);
         }
     }
 
@@ -75,8 +69,8 @@ class DevicesController extends Controller
     {
         //check package validation
         $account = Auth::user()->loggable->getAccount();
-        $devicesCount = Device::where('account_id', $account->id)->count();
-        if($account->plan->devices != 0 && $account->plan->devices <= $devicesCount){
+        $foodsCount = FoodStuff::where('account_id', $account->id)->count();
+        if($account->plan->food_stuff != 0 && $account->plan->food_stuff <= $foodsCount){
             return $this->fail('package_exceeded', "Package Exceeded", [], 402);
         }
 
@@ -86,19 +80,16 @@ class DevicesController extends Controller
         $check = $this->adminValidator([
             'account_id' => 'required|integer|exists:accounts,id',
             'name' => 'required|string|max:100',
-            'type' => 'required|string|max:100',
+            'price' => 'required|numeric',
             'active' => 'required|boolean',
-            'has_multi' => 'required|boolean',
-            'normal_hour_rate' => 'required|numeric',
-            'multi_hour_rate' => 'required|numeric',
         ], $data);
 
         if ($check !== true)
             return $check;
 
-        $device = new Device();
-        $device->fill($data);
-        $device->save();
+        $food = new FoodStuff();
+        $food->fill($data);
+        $food->save();
 
         return $this->success([
             'status' => 'success',
@@ -114,14 +105,11 @@ class DevicesController extends Controller
 
 
         $check = $this->adminValidator([
-            'id' => 'required|integer|exists:devices,id',
+            'id' => 'required|integer|exists:food_stuff,id',
             'account_id' => 'required|integer|exists:accounts,id',
             'name' => 'required|string|max:100',
-            'type' => 'required|string|max:100',
-            'active' => 'required|boolean',
-            'has_multi' => 'required|boolean',
-            'normal_hour_rate' => 'required|numeric',
-            'multi_hour_rate' => 'required|numeric',
+            'price' => 'required|numeric',
+            'active' => 'required|boolean'
         ], $data);
 
         if ($check !== true)
@@ -130,8 +118,8 @@ class DevicesController extends Controller
         unset($data['id']);
         unset($data['account_id']);
 
-        $device = Device::find($id);
-        $device->update($data);
+        $food = FoodStuff::find($id);
+        $food->update($data);
 
         return $this->success([
             'status' => 'success',
@@ -142,13 +130,13 @@ class DevicesController extends Controller
     public function delete($id, Request $request)
     {
         $check = $this->adminValidator([
-            'id' => 'required|integer|exists:devices,id'
+            'id' => 'required|integer|exists:food_stuff,id'
         ], ['id' => $id]);
 
         if ($check !== true)
             return $check;
 
-        $delete = Device::where('id', $id)->delete();
+        $delete = FoodStuff::where('id', $id)->delete();
 
         if($delete)
             return $this->success([

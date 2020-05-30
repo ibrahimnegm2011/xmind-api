@@ -31,5 +31,13 @@ if (isset($router)) {
             $router->get('{id}/delete', 'DevicesController@delete');
             $router->post('{id}/update', 'DevicesController@update');
         });
+
+        $app->group(['prefix' => 'foods/'], function ($router) {
+            $router->post('index', 'FoodsController@index');
+            $router->post('create', 'FoodsController@create');
+            $router->get('{id}/show', 'FoodsController@show');
+            $router->get('{id}/delete', 'FoodsController@delete');
+            $router->post('{id}/update', 'FoodsController@update');
+        });
     });
 }
