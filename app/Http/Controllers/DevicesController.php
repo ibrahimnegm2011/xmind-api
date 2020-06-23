@@ -13,6 +13,8 @@ class DevicesController extends Controller
     {
         $query = $this->filterStrings($query, ['name', 'type'], $data);
 
+        $query->where("account_id", Auth::user()->loggable->getAccountId());
+
         if(isset($data['active']) && !is_null($data['active'])){
             $query->where('active', $data['active']);
         }

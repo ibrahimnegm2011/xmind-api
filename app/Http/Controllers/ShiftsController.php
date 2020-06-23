@@ -46,11 +46,11 @@ class ShiftsController extends Controller
         $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
 
         if (!$currentShift) {
-        return $this->success([
-            'shift' => null,
-            'creatable' => true,
-            'canAccess' => true
-        ]);
+            return $this->success([
+                'shift' => null,
+                'creatable' => true,
+                'canAccess' => true
+            ]);
         }
 
         if ($user->getUserType() == 'account' || $currentShift->user_id == $user->id) {
