@@ -20,23 +20,37 @@ use App\User;
 */
 
 $factory->define(Admin::class, function (Faker $faker) {
-    return [];
+    return [
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'phone' => $faker->phoneNumber,
+    ];
 });
 
 $factory->define(Account::class, function (Faker $faker) {
-    return [];
+    return [
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'phone' => $faker->phoneNumber,
+    ];
 });
 
 $factory->define(Employee::class, function (Faker $faker) {
-    return [];
+    return [
+
+        'name' => $faker->name,
+        'email' => $faker->email,
+        'phone' => $faker->phoneNumber,
+        'salary' => $faker->numberBetween(1000 , 10000),
+        'join_date' => $faker->date('Y-m-d'),
+
+    ];
 });
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'name' => $faker->name,
-        'email' => $faker->email,
+
         'username' => $faker->userName,
-        'phone' => $faker->phoneNumber,
         'password' => app('hash')->make('123456')
     ];
 });

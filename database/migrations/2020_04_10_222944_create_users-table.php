@@ -18,9 +18,9 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id');
             $table->string('username', 100)->unique();
             $table->string('password', 255);
-            $table->string('name', 255);
-            $table->string('email', 100)->unique();
-            $table->string('phone', 50)->unique();
+//            $table->string('name', 255);
+//            $table->string('email', 100)->unique();
+//            $table->string('phone', 50)->unique();
             $table->string('api_token', 255)->nullable()->index('api_token_index');
             $table->dateTime('last_login')->nullable();
             $table->string('lang', 5)->default('en');

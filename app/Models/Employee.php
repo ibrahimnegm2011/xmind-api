@@ -10,6 +10,10 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Employee extends Model
 {
+    protected $fillable = [
+      'account_id', 'name' , 'email' , 'phone' , 'address' , 'salary' , 'join_date'
+
+    ];
     protected $table = 'employees';
 
     /**
