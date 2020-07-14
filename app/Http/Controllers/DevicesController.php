@@ -11,9 +11,9 @@ class DevicesController extends Controller
 
     private function filterList($query, $data)
     {
-        $query = $this->filterStrings($query, ['name', 'type'], $data);
-
         $query->where("account_id", Auth::user()->loggable->getAccountId());
+
+        $query = $this->filterStrings($query, ['name', 'type'], $data);
 
         if(isset($data['active']) && !is_null($data['active'])){
             $query->where('active', $data['active']);
@@ -39,7 +39,6 @@ class DevicesController extends Controller
         if ($check !== true)
             return $check;
 
-        $pagination = $request->pagination;
         if (is_null($request->pagination))
             $pagination = $this->pagination;
 
