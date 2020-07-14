@@ -60,7 +60,6 @@ class Controller extends BaseController
         foreach ($inputs as $key => $value)
             (in_array($key, $columns)) ? $query = $query->where($key, 'like', '%' . $value . '%') : '';
 
-
         return $query;
     }
 }
