@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Employee;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -24,19 +25,27 @@ class EmployeesController extends Controller
     private function filterList($query, $data)
     {
         $query = $this->filterStrings($query, ['name', 'email' , 'phone'], $data);
+        if(isset($data['active'])){
+            $query->whereHas('user', function (Builder $query) use ($data) {
+                $query->where('active', $data['active'] );
+            })->get();
+        }
+
+
         return $query;
     }
-
 
     public function index(Request $request)
     {
         $data = $request->all();
+
         $validator = $this->adminValidator([
 
             'pagination' => 'numeric',
             'name' => 'string|max:100',
             'email' => 'string|max:100',
             'phone' => 'numeric',
+            'active' => 'boolean',
         ], $data);
 
         if ($validator !== true) {
@@ -52,8 +61,8 @@ class EmployeesController extends Controller
         $account_id = Auth::user()->loggable->getAccountId();
 
         if ($user == 'account') {
-
             $query = Employee::where('account_id', $account_id)->with('user');
+
             $query = $this->filterList($query, $request->all());
             return $this->success($query->paginate($pagination));
 
@@ -80,7 +89,7 @@ class EmployeesController extends Controller
             $data['account_id'] = $account->id;
 
             $validator = $this->adminValidator([
-
+                'active' => 'boolean|required',
                 'username' => 'required|string|max:100',
                 'password' => 'required|string|max:100',
                 'name' => 'required|string|max:100',
@@ -106,19 +115,19 @@ class EmployeesController extends Controller
 
             $user = new User();
             $user->username = $data['username'];
+            $user->active = $data['active'];
             $user->password = Hash::make($data['password']);
             $employee->user()->save($user);
             return $this->success($data);
         }
     }
 
-
     public function show($id)
     {
 
         $account_id = Auth::user()->loggable->getAccountId();
 
-        $employees = Employee::where('account_id', $account_id)->find($id);
+        $employees = Employee::where('account_id', $account_id)->with('user')->find($id);
 
         if (!isset($employees)) {
             return $this->fail('not_found', "Not Found", [], 404);
@@ -133,7 +142,7 @@ class EmployeesController extends Controller
         $data = $request->all();
 
         $validator = validator($data, $roles = [
-
+            'active' => 'boolean|required',
             'username' => 'required|string|max:100',
             'password' => 'required|string|max:100',
             'name' => 'required|string|max:100',
@@ -166,7 +175,8 @@ class EmployeesController extends Controller
 
         $employee->user->update([
             'username' => $data['username'],
-            'password' => Hash::make($data['password'])
+            'password' => Hash::make($data['password']),
+            'active' => $data['active']
         ]);
 
         $res = $employee->update($data);
@@ -183,10 +193,10 @@ class EmployeesController extends Controller
     public function delete($id)
     {
         $account_id = Auth::user()->loggable->getAccountId();
-        $delete = Employee::find($id);
+        $delete = Employee::with('user')->find($id);
+        $delete->user->delete();
         $action = $delete->where('id', $id)->where('account_id', $account_id)->delete();
         if ($action) {
-
             return $this->success([
                 'status' => 'success',
                 "response" => ["action" => 'Deleted']

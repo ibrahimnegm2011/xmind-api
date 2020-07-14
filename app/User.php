@@ -14,6 +14,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public $timestamps= false;
 
+    protected $casts = [
+        'active' => 'boolean'
+    ];
+
+
+
     protected $table = 'users';
 
     /**
@@ -22,7 +28,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'username','last_login'
+        'username','last_login' , 'active'
     ];
 
     /**
@@ -62,4 +68,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getUserType(){
         return strtolower(explode("\\", $this->loggable_type)[2]);
     }
+
+
 }
