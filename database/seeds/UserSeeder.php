@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             });
         });
 
-        factory(Account::class, 4)->create()->each(function (Account $account) {
+        factory(Account::class, 4)->create(['plan_id' => 2])->each(function (Account $account) {
             $account->user()->save(factory(User::class)->make());
 
             if (rand(0, 1) != 1) return;
