@@ -53,7 +53,7 @@ class EmployeesController extends Controller
 
         if ($user == 'account') {
 
-            $query = Employee::where('account_id', $account_id);
+            $query = Employee::where('account_id', $account_id)->with('user');
             $query = $this->filterList($query, $request->all());
             return $this->success($query->paginate($pagination));
 
