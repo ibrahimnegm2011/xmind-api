@@ -28,6 +28,7 @@ if (isset($router)) {
         $app->group(['prefix' => 'sessions/'], function ($router) {
             $router->post('create', 'SessionsController@create');
             $router->post('addDevice', 'SessionsController@addDevice');
+            $router->post('stopDevice', 'SessionsController@stopDevice');
 
         });
 

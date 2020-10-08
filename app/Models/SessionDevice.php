@@ -45,4 +45,15 @@ class SessionDevice extends Model
 
         return $arr;
     }
+
+
+    public function calculateCost()
+    {
+        $d = explode(':', $this->time_spent);
+        $spentInMinutes = ($d[0] * 60) + $d[1];
+        $costSecond = $this->hour_rate / 60;
+
+        return $spentInMinutes * $costSecond;
+
+    }
 }

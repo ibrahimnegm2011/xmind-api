@@ -6,6 +6,7 @@ use App\Model\Device;
 use App\Model\Session;
 use App\Model\SessionDevice;
 use App\Model\Shift;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -124,5 +125,43 @@ class SessionsController extends Controller
         ]);
     }
 
+    public function stopDevice(Request $request){
+        $user = Auth::user();
+        $account_id = $user->loggable->getAccountId();
+
+        $data = $request->all();
+        $data['account_id'] = $account_id;
+        $data['user_id'] = $user->id;
+
+        $shift = Shift::where('account_id', $account_id)->where('status', 'started')->first(['id']);
+        if (!$shift) {
+            return $this->fail("shift_not_started", "shift_not_started", [], 402);
+        }
+
+        $sessionDevice = SessionDevice::find($data['session_device_id']);
+        if (!$sessionDevice) {
+            return $this->fail("session_device_not_found", "session_device_not_started", [], 402);
+        }
+
+
+        $times = explode(':', $data['time_spent']);
+        $hours = $times[0];
+        $minutes = $times[1];
+
+        $endTime = Carbon::make($sessionDevice->start)->copy()
+            ->addHours($hours)
+            ->addMinutes($minutes);
+
+        $sessionDevice->time_spent = $data['time_spent'];
+        $sessionDevice->end = $endTime;
+
+        $sessionDevice->cost = $sessionDevice->calculateCost();
+        $sessionDevice->save();
+
+        return $this->success([
+            'status' => 'success',
+            'sessionDevice' => $sessionDevice
+        ]);
+    }
 
 }
