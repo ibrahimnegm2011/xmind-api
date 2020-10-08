@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Device;
+use App\Model\FoodStuff;
 use App\Model\Shift;
 use App\Model\SubscriptionPlan;
 use Illuminate\Http\Request;
@@ -43,7 +45,12 @@ class ShiftsController extends Controller
         $user = Auth::user();
         $account_id = $user->loggable->getAccountId();
 
-        $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
+        $currentShift = Shift::where('account_id', $account_id)->where('status', 'started')
+            ->with(['user', 'sessions',
+                'sessions.sessionDevices', 'sessions.sessionDevices.device',
+                'sessions.sessionFoods', 'sessions.sessionFoods.food'
+            ])
+            ->first();
 
         if (!$currentShift) {
             return $this->success([
@@ -54,8 +61,12 @@ class ShiftsController extends Controller
         }
 
         if ($user->getUserType() == 'account' || $currentShift->user_id == $user->id) {
+            $devices = Device::where('account_id', $account_id)->where('active', true)->get();
+            $foods = FoodStuff::where('account_id', $account_id)->where('active', true)->get();
             $data = [
                 'shift' => $currentShift,
+                'devices' => $devices,
+                'foods' => $foods,
                 'creatable' => false,
                 'canAccess' => true
             ];
@@ -75,10 +86,27 @@ class ShiftsController extends Controller
         return $this->success($data);
     }
 
-    public function show(Request $request)
-    {
+    public function end(Request $request){
+        $user = Auth::user();
+        $account_id = $user->loggable->getAccountId();
 
-        dd('show');
+        $shift = Shift::where('account_id', $account_id)->where('status', 'started')->first();
+
+        if (!$shift) {
+            return $this->fail("shift_not_started", "shift_not_started", [], 402);
+        }
+
+        if ($user->getUserType() != 'account' && $shift->user_id != $user->id) {
+            return $this->fail("access_denied", "access_denied", [], 405);
+        }
+
+        $shift->status = 'finished';
+        $shift->end = date("H:i:s");
+        $shift->save();
+
+        return $this->success([
+            'status' => 'success'
+        ]);
     }
 
     public function create(Request $request)
@@ -104,21 +132,20 @@ class ShiftsController extends Controller
         $shift->fill($data);
         $shift->save();
 
+
+        $devices = Device::where('account_id', $account_id)->where('active', true)->get();
+        $foods = FoodStuff::where('account_id', $account_id)->where('active', true)->get();
+
         return $this->success([
             'status' => 'success',
-            'shift' => $shift
+            'shift' => $shift->load(['user', 'sessions',
+                'sessions.sessionDevices', 'sessions.sessionDevices.device',
+                'sessions.sessionFoods', 'sessions.sessionFoods.food'
+            ]),
+            'devices' => $devices,
+            'foods' => $foods,
         ]);
     }
 
-    public function update(Request $request)
-    {
 
-        dd('update');
-    }
-
-    public function delete(Request $request)
-    {
-        dd('delete');
-
-    }
 }

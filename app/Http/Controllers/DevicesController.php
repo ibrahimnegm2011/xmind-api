@@ -39,6 +39,7 @@ class DevicesController extends Controller
         if ($check !== true)
             return $check;
 
+        $pagination = $request->pagination;
         if (is_null($request->pagination))
             $pagination = $this->pagination;
 

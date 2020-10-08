@@ -5,9 +5,9 @@ namespace App\Model;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Shift extends Model
+class SessionFood extends Model
 {
-    protected $table = 'shifts';
+    protected $table = 'session_foods';
 
     /**
      * The attributes that are mass assignable.
@@ -15,28 +15,27 @@ class Shift extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'account_id', 'shift_date', 'start', 'end', 'status', 'total_records', 'total_times', 'records_revenue',
-        'food_revenue', 'total_revenue'
+        'user_id', 'shift_id', 'session_id', 'item_id', 'quantity', 'item_price', 'cost'
     ];
 
-
-    public function account(){
-        return $this->belongsTo(Account::class, 'account_id', 'id');
-    }
-
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function sessions(){
-        return $this->hasMany(Session::class, 'shift_id');
+    public function session()
+    {
+        return $this->belongsTo(Session::class, 'session_id', 'id');
+    }
+
+    public function food()
+    {
+        return $this->belongsTo(FoodStuff::class, 'item_id', 'id');
     }
 
     public function toArray()
     {
         $arr = parent::toArray();
-
-        $arr['shift_date'] = date("Y-m-d", strtotime($arr['shift_date']));
 
         if (isset($arr['created_at']))
             $arr['created_at'] = date("Y-m-d H:i:s", strtotime($arr['created_at']));

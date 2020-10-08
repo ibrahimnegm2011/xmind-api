@@ -22,6 +22,13 @@ if (isset($router)) {
             $router->post('index', 'ShiftsController@index');
             $router->get('current', 'ShiftsController@current');
             $router->post('create', 'ShiftsController@create');
+            $router->post('end', 'ShiftsController@end');
+        });
+
+        $app->group(['prefix' => 'sessions/'], function ($router) {
+            $router->post('create', 'SessionsController@create');
+            $router->post('addDevice', 'SessionsController@addDevice');
+
         });
 
         $app->group(['prefix' => 'devices/'], function ($router) {

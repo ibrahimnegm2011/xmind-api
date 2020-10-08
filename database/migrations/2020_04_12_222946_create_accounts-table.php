@@ -17,8 +17,8 @@ class CreateAccountsTable extends Migration
             $table->bigIncrements('id');
             $table->foreignId('plan_id')->references('id')->on('subscription_plans');
             $table->string('name' , 255);
-            $table->string('email' , 50)->unique();
-            $table->string('phone' , 20)->unique();
+            $table->string('email' , 100)->unique();
+            $table->string('phone' , 100)->unique();
             $table->timestamps();
         });
     }
