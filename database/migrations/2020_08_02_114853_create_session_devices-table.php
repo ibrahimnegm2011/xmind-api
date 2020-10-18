@@ -19,7 +19,7 @@ class CreateSessionDevicesTable extends Migration
             $table->foreignId('shift_id')->references('id')->on('shifts');
             $table->foreignId('session_id')->references('id')->on('sessions');
             $table->foreignId('device_id')->references('id')->on('devices');
-            $table->datetime('start');
+            $table->dateTime('start');
             $table->datetime('end')->nullable();
             $table->string('time_spent', 10)->default("00:00");
             $table->boolean('is_multi')->default(false);

@@ -15,7 +15,7 @@ class CreateSubscriptionPlanTable extends Migration
     {
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255)->unique();
+            $table->string('name', 255);
             $table->text('desc');
             $table->boolean('active');
             $table->integer('branches')->default(0);

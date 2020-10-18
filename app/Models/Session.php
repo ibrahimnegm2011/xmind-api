@@ -16,7 +16,7 @@ class Session extends Model
      */
     protected $fillable = [
         'user_id', 'shift_id', 'session_start', 'session_end', 'status',
-        'client_name', 'persons_no', 'device_price', 'food_price', 'total_price'
+        'client_name', 'persons_no', 'device_price', 'food_price', 'total_price','paid'
     ];
 
     public function user()
@@ -48,4 +48,6 @@ class Session extends Model
 
         return $arr;
     }
+
+
 }
