@@ -127,8 +127,7 @@ class SessionsController extends Controller
         ]);
     }
 
-    public function stopDevice(Request $request)
-    {
+    public function stopDevice(Request $request){
         $user = Auth::user();
         $account_id = $user->loggable->getAccountId();
 
@@ -313,5 +312,4 @@ class SessionsController extends Controller
 
 
     }
-
 }
