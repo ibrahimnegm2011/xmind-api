@@ -171,15 +171,14 @@ class SessionsController extends Controller
 
         $user = Auth::user();
         $account_id = $user->loggable->getAccountId();
+
         $shift = Shift::where('account_id', $account_id)->where('status', 'started')->first(['id']);
-
-        $data = $request->all();
-
-        $data['user_id'] = $user->id;
-
         if (!$shift) {
             return $this->fail("shift_not_started", "shift_not_started", [], 402);
         }
+
+        $data = $request->all();
+        $data['user_id'] = $user->id;
 
         $check = $this->adminValidator([
             'user_id' => 'required|integer|exists:users,id',
@@ -189,24 +188,17 @@ class SessionsController extends Controller
                     ->where('status', 'opened')
                     ->where('shift_id', $shift->id)
             ],
-            'shift_id' => [
-                'required',
-                Rule::exists('shifts', 'id')
-                    ->where('status', 'started')
-                    ->where('account_id', $account_id),
-            ],
-            'item_id' => ['required',
+            'food' => ['required',
                 Rule::exists('food_stuff', 'id')
                     ->where('active', true)
                     ->where('account_id', $account_id),
             ],
             'quantity' => ['integer', 'required'],
-            'cost' => ['numeric', 'required']
         ], $data);
         if ($check !== true)
             return $check;
 
-        $food = FoodStuff::find($data['item_id']);
+        $food = FoodStuff::find($data['food']);
 
         $foodObject = [
             'user_id' => $user->id,
@@ -215,7 +207,7 @@ class SessionsController extends Controller
             'item_id' => $food['id'],
             'quantity' => $data['quantity'],
             'item_price' => $food['price'],
-            'cost' => $data['cost']
+            'cost' => $food['price']*$data['quantity']
         ];
 
         $sessionFood = new SessionFood();
